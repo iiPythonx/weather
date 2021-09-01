@@ -28,6 +28,28 @@ def key_get_dict(d: dict, key: str) -> any:
 clear = lambda: subprocess.run(["cls" if os.name == "nt" else "clear"], shell = True)  # noqa
 
 # Initialization
+class Configuration(object):
+    def __init__(self, data: dict) -> None:
+        self.data = data
+
+    def get(self, key: str) -> any:
+        if key in self.data:
+            return self.data[key]
+
+        return None
+
+if os.path.isfile("config.json"):
+    with open("config.json", "r") as cfile:
+        config = json.loads(cfile.read())
+
+    if "graph" in config:
+        config = config["graph"]
+
+    config = Configuration(config)
+
+else:
+    config = Configuration({})
+
 try:
     date = datetime.strptime(input("Enter date: "), "%m-%d-%y").strftime("%m-%d-%y")
 
@@ -39,13 +61,14 @@ datakeys = {
     "Temperature (Fahrenheit)": {"key": "main.temp", "func": lambda x: x * (9 / 5) + 32, "short": "fahrenheit"},
     "Humidity": {"key": "main.humidity", "func": lambda x: x, "short": "humidity"},
     "Air Pressure": {"key": "main.pressure", "func": lambda x: x, "short": "pressure"},
+    "Wind Speed (mph)": {"key": "wind.speed", "func": lambda x: round(x / 1.467, 2), "short": "wspeed"},
     "Temp Max (Celsius)": {"key": "main.temp_max", "func": lambda x: x, "short": "maxc"},
     "Temp Max (Fahrenheit)": {"key": "main.temp_max", "func": lambda x: x * (9 / 5) + 32, "short": "maxf"},
     "Temp Min (Celsius)": {"key": "main.temp_min", "func": lambda x: x, "short": "minc"},
     "Temp Min (Fahrenheit)": {"key": "main.temp_min", "func": lambda x: x * (9 / 5) + 32, "short": "minf"},
 }
-showInterval = 1  # Show every 10 minutes
-showXLabel = False
+showInterval = 20  # Show every 10 minutes
+showXLabel = True
 showIndex = showInterval
 
 # Load weather
@@ -104,7 +127,8 @@ while True:
     if xlabel:
         plt.xticks(x, xlabel)
 
-    plt.plot(x, y)
+    plt.plot(x, y, color = config.get("lineColor") or "blue")
+    plt.hlines(range(round(min(y)), round(max(y))), min(x), max(x), colors = [config.get("markerColor") or "#C0C0C0"])
 
     plt.title(date)
     plt.show()
