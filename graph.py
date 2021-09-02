@@ -58,6 +58,7 @@ datakeys = {
     "Temperature (Fahrenheit)": {"key": "main.temp", "func": lambda x: x * (9 / 5) + 32, "short": "fahrenheit"},
     "Humidity": {"key": "main.humidity", "func": lambda x: x, "short": "humidity"},
     "Air Pressure": {"key": "main.pressure", "func": lambda x: x, "short": "pressure"},
+    "Sea Level": {"key": "main.sea_level", "func": lambda x: x, "short": "slvl"},
     "Wind Speed (mph)": {"key": "wind.speed", "func": lambda x: round(x / 1.467, 2), "short": "wspeed"},
     "Temp Max (Celsius)": {"key": "main.temp_max", "func": lambda x: x, "short": "maxc"},
     "Temp Max (Fahrenheit)": {"key": "main.temp_max", "func": lambda x: x * (9 / 5) + 32, "short": "maxf"},
