@@ -29,8 +29,8 @@ else:
     with open("weather.json", "r") as file:
         weather = json.loads(file.read())
 
-    with open("config.json", "r") as cfile:
-        config = Configuration(json.loads(cfile.read()))
+with open("config.json", "r") as cfile:
+    config = Configuration(json.loads(cfile.read()))
 
 cityID  = config.get("cityID")
 apiKey  = config.get("apiKey")
@@ -49,7 +49,7 @@ while True:
         time = datetime.now()
         req["time"] = time.strftime("%D").replace("/", "-") + "@" + time.strftime("%H:%M")
 
-        if weather[-1]["time"] == req["time"]:
+        if weather and weather[-1]["time"] == req["time"]:
             print("Seems like the script was restarted, skipping current minute.")
 
         else:
