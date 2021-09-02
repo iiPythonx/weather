@@ -18,6 +18,9 @@ def time_to_int(time: str) -> int:
     data = time.split(":")
     return (int(data[0]) * 60) + int(data[1])
 
+def time_to_date(time: str) -> str:
+    return time.split("@")[0].replace("-", "/")
+
 def key_get_dict(d: dict, key: str) -> any:
     val = d
     for i in key.split("."):
@@ -50,12 +53,6 @@ if os.path.isfile("config.json"):
 else:
     config = Configuration({})
 
-try:
-    date = datetime.strptime(input("Enter date: "), "%m-%d-%y").strftime("%m-%d-%y")
-
-except Exception:
-    close_script(1, "[red]Invalid date. Format: `01-01-21`")
-
 datakeys = {
     "Temperature (Celsius)": {"key": "main.temp", "func": lambda x: x, "short": "celsius"},
     "Temperature (Fahrenheit)": {"key": "main.temp", "func": lambda x: x * (9 / 5) + 32, "short": "fahrenheit"},
@@ -67,11 +64,19 @@ datakeys = {
     "Temp Min (Celsius)": {"key": "main.temp_min", "func": lambda x: x, "short": "minc"},
     "Temp Min (Fahrenheit)": {"key": "main.temp_min", "func": lambda x: x * (9 / 5) + 32, "short": "minf"},
 }
-showInterval = 20  # Show every 10 minutes
-showXLabel = True
+showInterval = config.get("showInterval") or 10
+showXLabel = config.get("showXLabel")
 showIndex = showInterval
+showAllData = config.get("showAllData") or False
 
 # Load weather
+if not showAllData:
+    try:
+        date = datetime.strptime(input("Enter date: "), "%m-%d-%y").strftime("%m-%d-%y")
+
+    except Exception:
+        close_script(1, "[red]Invalid date. Format: `01-01-21`")
+
 try:
     with open("weather.json", "r") as file:
         weather = json.loads(file.read())
@@ -101,9 +106,9 @@ while True:
             break
 
     # Handle weather
-    x, y, xlabel = [], [], []
+    x, y, xlabel, xx = [], [], [], 1
     for minute in weather:
-        if not minute["time"].startswith(date):
+        if not showAllData and not minute["time"].startswith(date):
             continue
 
         # Handle interval
@@ -115,20 +120,29 @@ while True:
 
         # Handle plotting
         time = minute["time"].split("@")[1]
-        x.append(time_to_int(time))
+        if showAllData:
+            x.append(xx)
+            xx += 1
+
+        else:
+            x.append(time_to_int(time))
         y.append(datakey_handler["func"](key_get_dict(minute, datakey_handler["key"])))
 
-        if showXLabel:
+        if showXLabel is None or showXLabel:
             xlabel.append(time)
+
+        else:
+            xlabel.append(time_to_int(time))
 
     # Begin plotting
     plt.xlabel("Time")
     plt.ylabel(datakey_label)
-    if xlabel:
+    if xlabel and not showAllData:
         plt.xticks(x, xlabel)
 
     plt.plot(x, y, color = config.get("lineColor") or "blue")
-    plt.hlines(range(round(min(y)), round(max(y))), min(x), max(x), colors = [config.get("markerColor") or "#C0C0C0"])
+    if config.get("showMarker") or config.get("showMarker") is None:
+        plt.hlines(range(round(min(y)), round(max(y))), min(x), max(x), colors = [config.get("markerColor") or "#C0C0C0"])
 
-    plt.title(date)
+    plt.title(date if not showAllData else f"{time_to_date(weather[0]['time'])}-{time_to_date(weather[-1]['time'])}")
     plt.show()
