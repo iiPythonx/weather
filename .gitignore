@@ -1,5 +1,6 @@
-# Hide weather info (reveals location)
-weather.json
+# Python cache
+__pycache__/
 
 # Hide config
 config.json
+
