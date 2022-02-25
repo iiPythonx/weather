@@ -4,3 +4,5 @@ __pycache__/
 # Hide config
 config.json
 
+# Database
+db/weather.db

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class = "card text-white bg-dark mb-3" style = "width: 18rem; height: 105%; overflow-y: scroll; float: left;">
+        <div class = "card-body">
+                {% for day in data %}
+                    <a onclick = "renderEmbed('{{ day }}');">{{ day }}</a> <a onclick = "openDropdown('{{ day.replace('/', '_') }}');"><i class = "fa-solid fa-caret-right"></i></a> <br>
+                    <div class = "collapse" id = "{{ day.replace('/', '_') }}">
+                        <div class = "card card-body card-nobg">
+                            {% for entry in data[day] %}
+                                <a onclick = "renderEmbedTime('{{ day }}', '{{ entry['time'] }}');"><i class = "fa-solid fa-arrow-turn-down-right"></i> {{ convert_time(entry["time"]) }}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+        </div>
+    </div>
+    <embed type = "text/html" src = "" width = "900" height = "400" id = "weatherEmbed" style = "float: left; padding-left: 20px;">
+{% endblock %}
+{% block jstags %}
+    <script>
+        function renderEmbed(date) {
+            document.getElementById("weatherEmbed").src = `/widgets/weather?date=${date}`;
+        }
+        function renderEmbedTime(date, time) {
+            document.getElementById("weatherEmbed").src = `/widgets/weather?date=${date}&time=${time}`;
+        }
+        function openDropdown(date) {
+            new bootstrap.Collapse($(`#${date}`)).toggle();
+        }
+    </script>
+{% endblock %}
