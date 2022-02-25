@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-    <div class = "card text-white bg-dark mb-3" style = "max-width: 74rem;">
+    <div class = "card text-white bg-dark mb-3" style = "width: 900px; height: 310px;">
         <div class = "card-header">{{ date }} ({{ convert_time(last["time"]) }})</div>
         <div class = "card-body">
             <h5 class = "card-title"><i class = "wi wi-owm-{{ last['json']['weather'][0]['id'] }}"></i> {{ last["json"]["weather"][0]["description"] }}</h5>
@@ -53,7 +53,7 @@
         const historyChart = new Chart(ctx, {
             type: "line",
             data: {
-                datasets: [{ label: datasets[0].label, data: datasets[0].data }]
+                datasets: [{ label: datasets[0].label, data: datasets[0].data, borderColor: "rgb(159, 159, 159)" }]
             },
             options: {
                 responsive: false,
@@ -82,7 +82,7 @@
                         }
                     }
                 };
-                historyChart.data.datasets = [{ label: ds.label, data: ds.data }];
+                historyChart.data.datasets = [{ label: ds.label, data: ds.data, borderColor: "rgb(159, 159, 159)" }];
                 historyChart.update();
             })
         }
