@@ -1,35 +1,35 @@
-# iiWeather
-### Easy to use, efficient weather monitoring and archiving utility.
----
+# iiPython/weather  
 
-### Installation
-- Clone the repository `git clone https://github.com/ii-Python/iiWeather`
-- Move into the new directory; `cd iiWeather`
-- Install dependencies; `python3 -m pip install -r reqs.txt`
-- Create a config.json file
+An efficient weather monitoring application using [OpenWeatherMap](https://openweathermap.org) and [Python](https://python.org).  
+
+
+### Initial setup
++ Clone the repository (Download ZIP or `git clone https://github.com/ii-Python/weather`)
++ Change into the repo directory (`cd weather`)
++ Install the requirements (`pip install -U -r reqs.txt`)
++ Setup the config.json file according to [Configuration](#configuration)
+
+### Launching
+
+To launch the weather recorder, you can simply run `weather.py` with your Python interpreter.
+
+### Configuration
+
+Before you can actually use the recorder, you need to create a `config.json` file with the following template:
 ```json
 {
-    "apiKey": "API key from https://openweathermap.org",
-    "cityID": "OpenWeatherMap ID for your city"
-}
-```
-
-### Running
-Simply start `python3 weather.py`, and `weather.json` will automatically begin to be populated.
-
-To view your weather data via graph, check out `graph.py`.
-
-### Graphing Customization
-For the graphing program, `graph.py`, you can create a `graph` key in `config.json`.  
-The following options are available:
-```json
-{
-    "graph": {
-        "markerColor": "HEX color code for the horizontal lines",
-        "lineColor": "HEX color code for the data line",
-        "showAllData": "whether to show ALL recorded data",
-        "showInterval": "how often to show data (in minutes, 20 recommended)",
-        "showXLabel": "show the time as the x label or not, if not, shows minutes from midnight"
+    "main": {
+        "owm": {
+            "city_id": 0000000,
+            "api_key": "Obtain this from https://openweathermap.org"
+        },
+        "save_interval": 10
+    },
+    "web": {
+        "addr": ["0.0.0.0", 8080]
     }
 }
 ```
+
+The OWM city ID is obtained from [OpenWeatherMap](https://openweathermap.org), same with the `api_key`.  
+The `addr` property tells Flask where to bind the HTTP server to, choose it wisely.
