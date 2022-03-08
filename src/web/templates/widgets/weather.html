@@ -1,32 +1,32 @@
 {% extends "base.html" %}
 {% block content %}
     <div class = "card text-white bg-dark mb-3" style = "width: 900px; height: 310px;">
-        <div class = "card-header">{{ date }} ({{ convert_time(last["time"]) }})</div>
+        <div class = "card-header">{{ data["date"] }} ({{ convert_time(data["data"]["time"]) }})</div>
         <div class = "card-body">
-            <h5 class = "card-title"><i class = "wi wi-owm-{{ last['json']['weather'][0]['id'] }}"></i> {{ last["json"]["weather"][0]["description"] }}</h5>
+            <h5 class = "card-title"><i class = "wi wi-owm-{{ data['data']['json']['weather'][0]['id'] }}"></i> {{ data["data"]["json"]["weather"][0]["description"] }}</h5>
             <p class = "card-text">
                 <canvas id = "dayHistory"></canvas>
                 <table class = "table table-dark table-borderless" style = "max-width: 18rem;">
                     <tbody>
                         <tr>
                             <td id = "changeToTemp" class = "graphopt">Temperature</td>
-                            <td class = "value">{{ last["json"]["main"]["temp"]|round|int }}°</td>
+                            <td class = "value">{{ data["data"]["json"]["main"]["temp"]|round|int }}°</td>
                         </tr>
                         <tr>
                             <td id = "changeToHumidity" class = "graphopt">Humidity</td>
-                            <td class = "value">{{ last["json"]["main"]["humidity"] }}%</td>
+                            <td class = "value">{{ data["data"]["json"]["main"]["humidity"] }}%</td>
                         </tr>
                         <tr>
                             <td id = "changeToPressure" class = "graphopt">Pressure</td>
-                            <td class = "value">{{ (last["json"]["main"]["pressure"] / 33.86)|round(2) }} in</td>
+                            <td class = "value">{{ (data["data"]["json"]["main"]["pressure"] / 33.86)|round(2) }} in</td>
                         </tr>
                         <tr>
                             <td id = "changeToWind" class = "graphopt">Wind</td>
-                            <td class = "value">{{ last["json"]["wind"]["speed"]|round|int }} mph</td>
+                            <td class = "value">{{ data["data"]["json"]["wind"]["speed"]|round|int }} mph</td>
                         </tr>
                         <tr>
                             <td id = "changeToVisibility" class = "graphopt">Visibility</td>
-                            <td class = "value">{{ (last["json"]["visibility"] / 1609)|round|int }} mi</td>
+                            <td class = "value">{{ (data["data"]["json"]["visibility"] / 1609)|round|int }} mi</td>
                         </tr>
                     </tbody>
                 </table>
@@ -41,11 +41,11 @@
 
         // Weather data
         const datasets = [
-            { label: "Temperature", id: "#changeToTemp", cb: (v, i, t) => { return `${v}°F`; }, data: [{{ strings["temp"]|safe }}] },
-            { label: "Humidity", id: "#changeToHumidity", cb: (v, i, t) => v, data: [{{ strings["humidity"]|safe }}] },                        
-            { label: "Pressure", id: "#changeToPressure", cb: (v, i, t) => v, data: [{{ strings["pressure"]|safe }}] },                        
-            { label: "Wind", id: "#changeToWind", cb: (v, i, t) => v, data: [{{ strings["wind"]|safe }}] },                        
-            { label: "Visibility", id: "#changeToVisibility", cb: (v, i, t) => v, data: [{{ strings["visibility"]|safe }}] },                        
+            { label: "Temperature", id: "#changeToTemp", cb: (v, i, t) => { return `${v}°F`; }, data: [{{ data["json"]["temp"]|safe }}] },
+            { label: "Humidity", id: "#changeToHumidity", cb: (v, i, t) => v, data: [{{ data["json"]["humidity"]|safe }}] },                        
+            { label: "Pressure", id: "#changeToPressure", cb: (v, i, t) => v, data: [{{ data["json"]["pressure"]|safe }}] },                        
+            { label: "Wind", id: "#changeToWind", cb: (v, i, t) => v, data: [{{ data["json"]["wind"]|safe }}] },                        
+            { label: "Visibility", id: "#changeToVisibility", cb: (v, i, t) => v, data: [{{ data["json"]["visibility"]|safe }}] },                        
         ]
 
         // Handle graph

@@ -1,9 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
-    <div class = "card text-white bg-dark mb-3" style = "width: 18rem; height: 105%; overflow-y: scroll; float: left;">
+    <div class = "card text-white bg-dark mb-3" style = "width: 18rem; height: 105%; float: left;">
         <div class = "card-body">
+            <div class = "card text-white bg-dark mb-3" style = "height: 92%; overflow-y: scroll;">
                 {% for day in data %}
-                    <a onclick = "renderEmbed('{{ day }}');">{{ day }}</a> <a onclick = "openDropdown('{{ day.replace('/', '_') }}');"><i class = "fa-solid fa-caret-right"></i></a> <br>
+                    <p class = "no-margin"><a onclick = "renderEmbed('{{ day }}');">{{ day }}</a> <a onclick = "openDropdown('{{ day.replace('/', '_') }}');"><i class = "fa-solid fa-caret-right"></i></a></p>
+                    <br>
                     <div class = "collapse" id = "{{ day.replace('/', '_') }}">
                         <div class = "card card-body card-nobg">
                             {% for entry in data[day] %}
@@ -12,6 +14,9 @@
                         </div>
                     </div>
                 {% endfor %}
+            </div>
+            <input class = "input-control" type = "date" id = "dateInput">
+            <button class = "btn btn-success" style = "width: 5.5rem;" id = "load_date"><i class = "fa-solid fa-arrow-right"></i></button>
         </div>
     </div>
     <embed type = "text/html" src = "" width = "920" height = "340" id = "weatherEmbed" style = "float: left; padding-left: 20px;">
@@ -27,5 +32,6 @@
         function openDropdown(date) {
             new bootstrap.Collapse($(`#${date}`)).toggle();
         }
+        $("#load_date").click(() => { renderEmbed($("#dateInput").val()); })
     </script>
 {% endblock %}

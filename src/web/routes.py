@@ -6,7 +6,7 @@ import json
 from . import app, rpath
 from ..config import config
 from datetime import datetime
-from flask import abort, request, render_template, send_from_directory
+from flask import abort, request, redirect, render_template, send_from_directory
 
 # Routes
 @app.route("/")
@@ -28,33 +28,26 @@ def config_page() -> None:
 
 @app.route("/widgets/weather")
 def weather_widget() -> None:
-    date = request.args.get("date")
+    date = app.utils.swap_date_format(request.args.get("date"))
     data = [d | {"json": json.loads(d["json"])} for d in app.db.get_date(date)]
     if not data:
-        return abort(404)
+        return render_template("errors/404.html", error = "No data exists for the provided date.", widget = True), 200
 
-    def suffix(d: int) -> str:
-        return "th" if 11 <= d <= 13 else {1: "st", 2: "nd", 3: "rd"}.get(d % 10, "th")
+    date = datetime.strptime(date, "%m/%d/%y")
+    data = {
+        "data": ([e for e in data if e["time"] == request.args.get("time")] or [data[-1]])[0],
+        "date": date.strftime("%A, %B %-d{} %Y").format(app.utils.suffix(date.day)),
+        "json": app.utils.make_data_strings(data)
+    }
 
-    def make_data_str(data: list, y_cb) -> str:
-        return ", ".join([f"{{x: '{app.utils.convert_time(item['time'])}', y: {round(y_cb(item))}}}" for item in data])
-
-    date = datetime.now().strptime(date, "%m/%d/%y")
-    return render_template(
-        "widgets/weather.html",
-        data = data,
-        last = ([e for e in data if e["time"] == request.args.get("time")] or [data[-1]])[0],
-        date = date.strftime("%A, %B %-d{} %Y").format(suffix(date.day)),
-        strings = {
-            "temp": make_data_str(data, lambda i: i["json"]["main"]["temp"]),
-            "humidity": make_data_str(data, lambda i: i["json"]["main"]["humidity"]),
-            "pressure": make_data_str(data, lambda i: round(i["json"]["main"]["pressure"] / 33.86, 2)),
-            "wind": make_data_str(data, lambda i: i["json"]["wind"]["speed"]),
-            "visibility": make_data_str(data, lambda i: round(i["json"]["visibility"] / 1609))
-        },
-        widget = True
-    ), 200
+    # Send template
+    return render_template("widgets/weather.html", data = data, widget = True)
 
 @app.route("/s/<path:path>")
 def send_static_file(path: str) -> None:
     return send_from_directory(rpath("static"), path, conditional = True)
+
+# Error handlers
+@app.errorhandler(404)
+def handle404(e: Exception) -> None:
+    return render_template("errors/404.html"), 404

@@ -1,20 +1,24 @@
 {% extends "base.html" %}
 {% block content %}
     <h3>Configuration</h3>
-    <table class = "table table-dark table-borderless" style = "max-width: 18rem;">
-        <tbody>
-            <tr>
-                <th scope = "row">DB Entries</th>
-                <td>{{ length }}</td>
-            </tr>
-            <tr>
-                <th scope = "row">DB Size</th>
-                <td>{{ size }}</td>
-            </tr>
-            <tr>
-                <th scope = "row">OWM City ID</th>
-                <td><a href = "https://openweathermap.org/city/{{ config.get('main.owm.city_id') }}">{{ config.get("main.owm.city_id") }}</a></td>
-            </tr>
-        </tbody>
-    </table>
+    <div class = "row">
+        <div class = "col-sm-6">
+            <div class = "card text-white bg-dark">
+                <div class = "card-header">Database</div>
+                <div class = "card-body"><p class = "card-text">
+                    <p>Entries (datapoints): {{ length }}</p>
+                    <p>File size: {{ size }}</p>
+                </div>
+            </div>
+        </div>
+        <div class = "col-sm-6">
+            <div class = "card text-white bg-dark">
+                <div class = "card-header">Tracking</div>
+                <div class = "card-body"><p class = "card-text">
+                    <p>OWM City ID: <a href = "https://openweathermap.org/city/{{ config.get('main.owm.city_id') }}" target = "_blank">{{ config.get("main.owm.city_id") }}</a></p>
+                    <p>Interval: {{ config.get("main.save_interval") }}m</p>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
