@@ -5,7 +5,6 @@
             <div class = "card text-white bg-dark mb-3" style = "height: 92%; overflow-y: scroll;">
                 {% for day in data %}
                     <p class = "no-margin"><a onclick = "renderEmbed('{{ day }}');">{{ day }}</a> <a onclick = "openDropdown('{{ day.replace('/', '_') }}');"><i class = "fa-solid fa-caret-right"></i></a></p>
-                    <br>
                     <div class = "collapse" id = "{{ day.replace('/', '_') }}">
                         <div class = "card card-body card-nobg">
                             {% for entry in data[day] %}
@@ -15,7 +14,7 @@
                     </div>
                 {% endfor %}
             </div>
-            <input class = "input-control" type = "date" id = "dateInput">
+            <input class = "input-control" type = "date" id = "dateInput" style = "width: 10rem;">
             <button class = "btn btn-success" style = "width: 5.5rem;" id = "load_date"><i class = "fa-solid fa-arrow-right"></i></button>
         </div>
     </div>
