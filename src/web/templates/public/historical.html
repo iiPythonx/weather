@@ -1,11 +1,34 @@
 {% extends "base.html" %}
 {% block content %}
-    <div class = "card text-white bg-dark mb-3" style = "width: 18rem; height: 105%; float: left;">
+
+    <!-- Custom CSS -->
+    <style>
+        .historical-container {
+            float: left;  /* Allows the embed to render next to the sidebar */
+            width: 18rem;  /* Perfect scaled size, don't change */
+            height: 105%;
+        }
+        .historical-container > .card-body {
+            height: 100%;
+        }
+        .history-scroller {
+            height: 94%;  /* Gives us enough room for our manual date input */
+            overflow-y: scroll;
+        }
+    </style>
+
+    <div class = "card text-white bg-dark historical-container">
         <div class = "card-body">
-            <div class = "card text-white bg-dark mb-3" style = "height: 92%; overflow-y: scroll;">
+
+            <!-- Day scroller -->
+            <div class = "card text-white bg-dark history-scroller">
                 {% for day in data %}
-                    <p class = "no-margin"><a onclick = "renderEmbed('{{ day }}');">{{ day }}</a> <a onclick = "openDropdown('{{ day.replace('/', '_') }}');"><i class = "fa-solid fa-caret-right"></i></a></p>
-                    <div class = "collapse" id = "{{ day.replace('/', '_') }}">
+                    {% set day2 = day.replace("/", "_") %}
+                    <p class = "no-margin">
+                        <a onclick = "renderEmbed('{{ day }}');">{{ day }}</a> <!-- Do note there is a space after this link -->
+                        <a onclick = "openDropdown('{{ day2 }}');"><i class = "fa-solid fa-caret-right" id = "{{ day2 }}_arrow"></i></a>
+                    </p>
+                    <div class = "collapse" id = "{{ day2 }}">
                         <div class = "card card-body card-nobg">
                             {% for entry in data[day] %}
                                 <a onclick = "renderEmbedTime('{{ day }}', '{{ entry['time'] }}');"><i class = "fa-solid fa-arrow-turn-down-right"></i> {{ convert_time(entry["time"]) }}</a>
@@ -14,6 +37,8 @@
                     </div>
                 {% endfor %}
             </div>
+
+            <!-- Manual day input -->
             <input class = "input-control" type = "date" id = "dateInput" style = "width: 10rem;">
             <button class = "btn btn-success" style = "width: 5.5rem;" id = "load_date"><i class = "fa-solid fa-arrow-right"></i></button>
         </div>
@@ -30,6 +55,10 @@
         }
         function openDropdown(date) {
             new bootstrap.Collapse($(`#${date}`)).toggle();
+
+            // Handle pointer arrow
+            let current = $(`#${date}_arrow`).css("rotate");
+            $(`#${date}_arrow`).css("rotate", (current == "none" || current == "0deg") ? "90deg" : "0deg");
         }
         $("#load_date").click(() => { renderEmbed($("#dateInput").val()); })
     </script>
