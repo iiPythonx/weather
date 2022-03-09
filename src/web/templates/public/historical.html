@@ -57,8 +57,8 @@
             new bootstrap.Collapse($(`#${date}`)).toggle();
 
             // Handle pointer arrow
-            let current = $(`#${date}_arrow`).css("rotate");
-            $(`#${date}_arrow`).css("rotate", (current == "none" || current == "0deg") ? "90deg" : "0deg");
+            let current = $(`#${date}_arrow`).css("transform");
+            $(`#${date}_arrow`).css("transform", `rotate(${(current == 'none' || current == 'rotate(0deg)') ? '90deg' : '0deg'})`);
         }
         $("#load_date").click(() => { renderEmbed($("#dateInput").val()); })
     </script>
