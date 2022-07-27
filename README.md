@@ -1,10 +1,10 @@
-# iiPython/weather  
+# iiPythonx/weather  
 
 An efficient weather monitoring application using [OpenWeatherMap](https://openweathermap.org) and [Python](https://python.org).  
 
 
 ### Initial setup
-+ Clone the repository (Download ZIP or `git clone https://github.com/ii-Python/weather`)
++ Clone the repository (Download ZIP or `git clone https://github.com/iiPythonx/weather`)
 + Change into the repo directory (`cd weather`)
 + Install the requirements (`pip install -U -r reqs.txt`)
 + Setup the config.json file according to [Configuration](#configuration)
