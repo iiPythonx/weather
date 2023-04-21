@@ -1,8 +1,5 @@
-# Copyright 2022 iiPython
+# Copyright 2023 iiPython
 
-__version__ = "1.0a"
+__version__ = "2.0.0"
 __license__ = "MIT"
-__copyright__ = "(c) 2022 iiPython"
-
-from .config import config
-from .recorder import WeatherRecorder
+__copyright__ = "(c) 2022-2023 iiPython"
