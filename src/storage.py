@@ -4,6 +4,7 @@
 import os
 import json
 import gzip
+from typing import List
 from requests import get
 from datetime import datetime
 
@@ -62,7 +63,7 @@ def make_api_request(endpoint: str, data: dict) -> dict:
 class Scraper(object):
     def __init__(self) -> None:
         self.last_path = None
-        self.current_scrape = []
+        self.current_scrape, self.data_cache = [], {}
 
         # Fetch coordinates
         city_data = get_city_info(owm_cityid)["coord"]
@@ -71,11 +72,31 @@ class Scraper(object):
     def current_key(self) -> str:
         return datetime.utcnow().strftime("%m-%d-%y") + ".json"  # 0M-0D-0Y
 
+    def get_weather_for(self, date: str) -> List[dict] | None:
+        fp = os.path.join(entries_location, date + ".json")
+        for p in [fp, fp + ".gz"]:
+            gz = p[-3:] == ".gz"
+            if gz and date in self.data_cache:
+                return self.data_cache[date]
+
+            elif not os.path.isfile(p):
+                continue
+
+            with open(p, "rb") as fh:
+                raw = fh.read()
+                data = json.loads(raw.decode() if not gz else gzip.decompress(raw).decode())
+                if gz:
+                    self.data_cache[date] = data
+
+                return data
+
+        return None
+
     def scrape_weather(self) -> None:
         path = os.path.join(entries_location, self.current_key())
         if (path != self.last_path) and (self.last_path is not None):
-            os.remove(path)
-            with open(path + ".gz", "wb") as fh:  # Convert to a .json.gz
+            os.remove(self.last_path)
+            with open(self.last_path + ".gz", "wb") as fh:  # Convert to a .json.gz
                 fh.write(gzip.compress(json.dumps(self.current_scrape).encode("utf8")))
 
             self.current_scrape = []  # Reset in-memory buffer
