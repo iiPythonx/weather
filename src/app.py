@@ -1,14 +1,21 @@
 # Copyright 2023 iiPython
 
 # Modules
+import os
 import asyncio
+from jinja2 import FileSystemLoader
 from blacksheep import Application
+from blacksheep.server.templating import use_templates
 
-from .config import config
 from .storage import Scraper
+from .config import config, app_root
 
 # Initialization
 app = Application()
+render = use_templates(
+    app,
+    loader = FileSystemLoader(os.path.join(app_root, "src/templates"))
+)
 
 # Handle periodic scraping
 scraper = Scraper()  # noqa
