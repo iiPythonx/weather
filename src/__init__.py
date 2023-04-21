@@ -3,3 +3,5 @@
 __version__ = "2.0.0"
 __license__ = "MIT"
 __copyright__ = "(c) 2022-2023 iiPython"
+
+from .app import app  # noqa
