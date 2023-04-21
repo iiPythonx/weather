@@ -12,6 +12,7 @@ from .config import config, app_root
 
 # Initialization
 app = Application()
+app.serve_files(os.path.join(app_root, "src/static"), root_path = "static")
 render = use_templates(
     app,
     loader = FileSystemLoader(os.path.join(app_root, "src/templates"))

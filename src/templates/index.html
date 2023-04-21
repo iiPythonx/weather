@@ -1,5 +1,28 @@
-{% extends "base.html" %}
-{% set title = "Homepage" %}
-{% block main %}
-    <p>Hello, world. This is index.html.</p>
-{% endblock %}
+<!doctype html>
+<html lang = "en">
+    <head>
+        <meta charset = "utf-8">
+
+        <!-- CSS -->
+        <link rel = "preconnect" href = "https://fonts.gstatic.com" crossorigin>
+        <link rel = "preconnect" href = "https://fonts.googleapis.com">
+        <link href = "/static/css/main.css" rel = "stylesheet">
+        <link href = "/static/css/normalize.css" rel = "stylesheet">
+        <link href = "https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel = "stylesheet">
+
+        <title>Archiver</title>
+    </head>
+    <body>
+        <div id = "main">
+            <p class = "header">Hello, world!</p>
+            <hr>
+            <canvas id = "graph"></canvas>
+            <p>hello</p>
+        </div>
+
+        <!-- JS -->
+        <script src = "https://code.jquery.com/jquery-3.6.4.min.js" integrity = "sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin = "anonymous"></script>
+        <script src = "https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src = "/static/js/loader.js"></script>
+    </body>
+</html>
