@@ -1,3 +1,2 @@
-rich
-flask
-requests
+toml; python_version < "3.11"
+blacksheep
