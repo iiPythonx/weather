@@ -5,6 +5,10 @@ html, body {
     color: #fefefe;
     background-color: #121212;
 }
+a:hover {
+    color: #9e9e9e;
+    cursor: pointer;
+}
 div#main {
     padding: 1rem;
     border-radius: 1rem;
@@ -21,10 +25,54 @@ div#main {
     transform: translateX(-50%) translateY(-50%);
 }
 div#main p.header {
-    text-align: center;
+    margin: 0px;
 }
 canvas#graph {
     width: 100%;
     height: 300px;
-    background-color: #fefefe;
 }
+p#forecast-description {
+    text-align: center;
+    margin-bottom: 0px;
+    text-transform: capitalize;
+}
+
+/* Handle tabs */
+button.btn-tab {
+    width: 6rem;
+    padding: 10px;
+
+    /* Styling */
+    border: none;
+    border-radius: 5px;
+    color: #fefefe;
+    background-color: #121212;
+}
+div.tab {
+    width: 100%;
+    height: 212px;
+}
+div#historical-frame {
+    display: none;  /* Hide initially */
+}
+
+/* Table */
+#current-tb {
+    width: 100%;
+    border-collapse: collapse;
+}
+#current-tb td, #current-tb th {
+    padding: 8px;
+}
+#current-tb th {
+    text-align: left;
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+th.info-key:hover {
+    color: #9e9e9e; 
+    cursor: pointer;
+}
+
+/* Helpers */
+.ta-center { text-align: center; }

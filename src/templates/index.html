@@ -14,10 +14,28 @@
     </head>
     <body>
         <div id = "main">
-            <p class = "header">Hello, world!</p>
+            <p class = "header ta-center"></p>
             <hr>
             <canvas id = "graph"></canvas>
-            <p>hello</p>
+            <p id = "forecast-description"></p>
+            <hr>
+            <div id = "info-frame" class = "tab">
+                <table id = "current-tb">
+                    <tr>
+                        <th></th>
+                        <th>Latest</th>
+                        <th>Average</th>
+                    </tr>
+                </table>
+            </div>
+            <div id = "historical-frame" class = "tab">
+                <ul></ul>
+            </div>
+            <hr>
+            <div class = "ta-center">
+                <button id = "info-btn" class = "btn-tab">Information</button>
+                <button id = "historical-btn" class = "btn-tab">Historical</button>
+            </div>
         </div>
 
         <!-- JS -->

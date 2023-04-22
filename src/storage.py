@@ -111,6 +111,7 @@ class Scraper(object):
             "data/2.5/weather",
             {"lat": self.lat, "lon": self.lon, "units": "imperial"}
         ))
+        self.current_scrape[-1]["time"] = datetime.utcnow().strftime("%H:%M")
         with open(path, "w+") as fh:
             fh.write(json.dumps(self.current_scrape))
 
