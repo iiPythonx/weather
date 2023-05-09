@@ -51,6 +51,7 @@ button.btn-tab {
 div.tab {
     width: 100%;
     height: 212px;
+    overflow-y: scroll;
 }
 div#historical-frame {
     display: none;  /* Hide initially */
