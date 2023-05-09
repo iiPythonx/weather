@@ -92,6 +92,12 @@ class Scraper(object):
 
         return None
 
+    def minify(self, data: dict) -> dict:
+        return {
+            "desc": data["weather"][0]["description"],
+            "wspeed": data["wind"]["speed"]
+        } | {k: data["main"][k] for k in ["temp", "pressure", "humidity"]}
+
     def scrape_weather(self) -> None:
         path = os.path.join(entries_location, self.current_key())
         if (path != self.last_path) and (self.last_path is not None):
@@ -107,10 +113,10 @@ class Scraper(object):
                 self.current_scrape = json.loads(fh.read())
 
         # Update on-disk weather
-        self.current_scrape.append(make_api_request(
+        self.current_scrape.append(self.minify(make_api_request(
             "data/2.5/weather",
             {"lat": self.lat, "lon": self.lon, "units": "imperial"}
-        ))
+        )))
         self.current_scrape[-1]["time"] = datetime.utcnow().strftime("%H:%M")
         with open(path, "w+") as fh:
             fh.write(json.dumps(self.current_scrape))

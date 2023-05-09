@@ -2,10 +2,10 @@
 
 // Initialization
 const datapointEntries = [
-    { k: "main.temp", n: "Temperature", s: "°" },
-    { k: "main.pressure", n: "Air Pressure", s: "hPa" },
-    { k: "main.humidity", n: "Humidity", s: "%" },
-    { k: "wind.speed", n: "Wind Speed", s: "mph" }
+    { k: "temp", n: "Temperature", s: "°" },
+    { k: "pressure", n: "Air Pressure", s: "hPa" },
+    { k: "humidity", n: "Humidity", s: "%" },
+    { k: "wspeed", n: "Wind Speed", s: "mph" }
 ];
 
 // Chart.js setup
@@ -37,7 +37,7 @@ function renderData(date, desc, data) {
             options: { scales: { y: { beginAtZero: true } } }
         });
     }
-    setGraphFocus("main.temp");
+    setGraphFocus("temp");
 
     // Flush info to table
     for (let dp of datapointEntries) {
@@ -83,17 +83,16 @@ function handleCallback(d) {
     let parsed = { times: [] }
     for (let entry of d.data) {
         for (let dp of datapointEntries) {
-            let sk = dp.k.split(".");
             if (!(dp.k in parsed)) parsed[dp.k] = {
                 label: dp.n, data: [], borderWidth: 1
             };
-            parsed[dp.k].data.push(entry[sk[0]][sk[1]]);
+            parsed[dp.k].data.push(entry[dp.k]);
         }
         parsed.times.push(entry.time);
     }
     renderData(
         d.date, // To render on top of box
-        d.data[0].weather[0].description,  // Basic forecast description
+        d.data[0].desc,  // Basic forecast description
         parsed  // Actual data
     );
 }
