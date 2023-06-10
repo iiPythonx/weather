@@ -62,7 +62,7 @@ def make_api_request(endpoint: str, data: dict) -> dict:
 # Scraping handlers
 class Scraper(object):
     def __init__(self) -> None:
-        self.last_path = None
+        self.last_path = os.path.join(entries_location, self.current_key())
         self.current_scrape, self.data_cache = [], {}
 
         # Fetch coordinates
