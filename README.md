@@ -7,29 +7,34 @@ An efficient weather monitoring application using [OpenWeatherMap](https://openw
 + Clone the repository (Download ZIP or `git clone https://github.com/iiPythonx/weather`)
 + Change into the repo directory (`cd weather`)
 + Install the requirements (`pip install -U -r reqs.txt`)
-+ Setup the config.json file according to [Configuration](#configuration)
++ Setup the config.toml file according to [Configuration](#configuration)
 
 ### Launching
 
-To launch the weather recorder, you can simply run `weather.py` with your Python interpreter.
+To launch the weather recorder, you can simply run `launch_worker.py` with your Python interpreter.
 
 ### Configuration
 
-Before you can actually use the recorder, you need to create a `config.json` file with the following template:
-```json
-{
-    "main": {
-        "owm": {
-            "city_id": 0000000,
-            "api_key": "Obtain this from https://openweathermap.org"
-        },
-        "save_interval": 10
-    },
-    "web": {
-        "addr": ["0.0.0.0", 8080]
-    }
-}
+Before you can actually use the recorder, you need to create a `config.toml` file with the following template:
+```toml
+# OpenWeatherMap related stuff
+openweather_api_key = "obtain this from https://home.openweathermap.org/api_keys"
+openweather_city_id = 0000000
+scrape_interval     = 10
+
+# If you want to change the default database location:
+# database_location   = ""
 ```
 
-The OWM city ID is obtained from [OpenWeatherMap](https://openweathermap.org), same with the `api_key`.  
-The `addr` property tells Flask where to bind the HTTP server to, choose it wisely.
+`openweather_city_id` is obtained from [OpenWeatherMap](https://openweathermap.org), same as with the `openweather_api_key`.
+
+### Running inside docker
+
+This repository contains a very basic `Dockerfile` for running it inside of docker-heavy workflows.  
+The following would setup running from inside docker:
+```sh
+git clone https://github.com/iiPythonx/weather
+cd weather
+nano config.toml  # add your configuration
+docker compose up -d
+```
