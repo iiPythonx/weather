@@ -22,10 +22,15 @@ async def get_api_past(date: str) -> dict:
 
 @app.route("/api/dates", methods = ["GET"])
 async def get_dates() -> List[str]:
+    current_key = scraper.current_key()
     return {
         "status": 200,
         "data": sorted(
-            [f.split(".")[0] for f in os.listdir(os.path.dirname(scraper.last_path))],
+            [
+                f.split(".")[0]
+                for f in os.listdir(os.path.dirname(scraper.last_path))
+                if f != current_key
+            ],
             reverse = True
         )
     }

@@ -5,7 +5,7 @@ const datapointEntries = [
     { k: "temp", n: "Temperature", s: "°" },
     { k: "pressure", n: "Air Pressure", s: "hPa" },
     { k: "humidity", n: "Humidity", s: "%" },
-    { k: "wspeed", n: "Wind Speed", s: "mph" }
+    { k: "wspeed", n: "Wind Speed", s: " mph" }
 ];
 
 // Chart.js setup
@@ -26,7 +26,8 @@ function setGraphFocus(key) {
 function renderData(date, desc, data) {
 
     // Process data
-    window._lastData = data
+    window._lastData = data;
+    window._lastData.date = date;
     $("p#forecast-description").text(desc);
 
     // Handle chart updating (or creation)
@@ -90,6 +91,12 @@ function handleCallback(d) {
         }
         parsed.times.push(entry.time);
     }
+
+    // Add selection highlight
+    $(".selected").removeClass("selected");
+    $(`a:contains("${d.date}")`).addClass("selected");
+
+    // Render graph
     renderData(
         d.date, // To render on top of box
         d.data[0].desc,  // Basic forecast description
@@ -103,8 +110,10 @@ $.get("/api/dates", {}, (d) => {
     for (let date of d.data) {
         let obj = $("#historical-frame").find("ul").append(`<li><a>${date}</a></li>`);
         $(obj.children().last()).on("click", () => {
+            if (window._lastData && (date == window._lastData.date)) return;
             $.get(`/api/past/${date}`, {}, handleCallback);
             showInfoTab();
         });
     }
+    if (!d.data.length) $("#historical-frame").html("<p>No historical data to display.</p>");
 });
