@@ -2,30 +2,31 @@
 
 # Modules
 import os
+import time
 import json
 import gzip
 from typing import List
-from requests import get
+from pathlib import Path
 from datetime import datetime
+
+from requests import get
 
 from .config import config, app_root
 
 # Initialization
-database_path = os.path.join(app_root, "db")
-if config.get("database_location"):
-    database_path = os.path.abspath(config["database_location"])
-    if not os.path.isdir(database_path):
-        os.makedirs(database_path)
-        raise RuntimeError("created database folder, please copy cities.json to it.")
+database_path = Path(config.get("database_location") or os.path.join(app_root, "db"))
+if not database_path.is_dir():
+    os.makedirs(database_path)
+    raise RuntimeError("created database folder, please copy cities.json to it.")
 
-entries_location = os.path.join(database_path, "entries")
-if not os.path.isdir(entries_location):
+entries_location = database_path / "entries"
+if not entries_location.is_dir():
     os.mkdir(entries_location)
 
 # Load openweathermap data
 def get_city_info(city_id: int) -> dict:
     try:
-        with open(os.path.join(database_path, "cities.json"), "r") as fh:
+        with open(database_path / "cities.json", "r") as fh:
             return [
                 c for c in json.loads(fh.read())
                 if c["id"] == owm_cityid
@@ -56,13 +57,14 @@ def make_api_request(endpoint: str, data: dict) -> dict:
         return req.json()
 
     except Exception as e:
-        print(f"[-] Caught a '{type(e)}'!")
+        print(f"[-] Caught a '{type(e)}'! Trying again in 5 seconds ...")
+        time.sleep(5)
         return make_api_request(endpoint, data)
 
 # Scraping handlers
 class Scraper(object):
     def __init__(self) -> None:
-        self.last_path = os.path.join(entries_location, self.current_key())
+        self.last_path = entries_location / self.current_key()
         self.current_scrape, self.data_cache = [], {}
 
         # Fetch coordinates
@@ -73,24 +75,18 @@ class Scraper(object):
         return datetime.utcnow().strftime("%m-%d-%y") + ".json"  # 0M-0D-0Y
 
     def get_weather_for(self, date: str) -> List[dict] | None:
-        fp = os.path.join(entries_location, date + ".json")
-        for p in [fp, fp + ".gz"]:
-            gz = p[-3:] == ".gz"
-            if gz and date in self.data_cache:
-                return self.data_cache[date]
+        fp = entries_location / (date + ".json.gz")
+        cache_data = self.data_cache.get(date)
+        if cache_data is not None:
+            return cache_data
 
-            elif not os.path.isfile(p):
-                continue
+        elif not fp.is_file():
+            return None
 
-            with open(p, "rb") as fh:
-                raw = fh.read()
-                data = json.loads(raw.decode() if not gz else gzip.decompress(raw).decode())
-                if gz:
-                    self.data_cache[date] = data
-
-                return data
-
-        return None
+        with open(fp, "rb") as fh:
+            data = json.loads(gzip.decompress(fh.read()).decode())
+            self.data_cache[date] = data
+            return data
 
     def minify(self, data: dict) -> dict:
         return {
@@ -99,16 +95,16 @@ class Scraper(object):
         } | {k: data["main"][k] for k in ["temp", "pressure", "humidity"]}
 
     def scrape_weather(self) -> None:
-        path = os.path.join(entries_location, self.current_key())
+        path = entries_location / self.current_key()
         if (path != self.last_path) and (self.last_path is not None):
             os.remove(self.last_path)
-            with open(self.last_path + ".gz", "wb") as fh:  # Convert to a .json.gz
+            with open(self.last_path.with_suffix(".gz"), "wb") as fh:  # Convert to a .json.gz
                 fh.write(gzip.compress(json.dumps(self.current_scrape).encode("utf8")))
 
             self.current_scrape = []  # Reset in-memory buffer
 
         # Read file from disk if we don't have it
-        elif (not self.current_scrape) and os.path.isfile(path):
+        elif (not self.current_scrape) and path.is_file():
             with open(path, "r") as fh:
                 self.current_scrape = json.loads(fh.read())
 
