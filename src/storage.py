@@ -98,7 +98,7 @@ class Scraper(object):
         path = entries_location / self.current_key()
         if (path != self.last_path) and (self.last_path is not None):
             os.remove(self.last_path)
-            with open(self.last_path.with_suffix(".gz"), "wb") as fh:  # Convert to a .json.gz
+            with open(self.last_path.with_suffix(".json.gz"), "wb") as fh:  # Convert to a .json.gz
                 fh.write(gzip.compress(json.dumps(self.current_scrape).encode("utf8")))
 
             self.current_scrape = []  # Reset in-memory buffer
