@@ -3,7 +3,7 @@
 # Modules
 import re
 import os
-from natsort import natsorted
+from datetime import datetime
 from typing import List, Dict
 
 from src.app import app, scraper
@@ -26,11 +26,12 @@ async def get_api_past(date: str) -> dict:
 async def get_dates() -> Dict[str, int | List[str]]:
     return {
         "status": 200,
-        "data": natsorted(
+        "data": sorted(
             [
                 f.split(".")[0]
                 for f in os.listdir(os.path.dirname(scraper.last_path))
             ],
-            reverse = True
+            reverse = True,
+            key = lambda d: datetime.strptime(d, "%m-%d-%y")
         )
     }

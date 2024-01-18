@@ -1,6 +1,5 @@
 toml; python_version < "3.11"
 uvicorn
-natsort
 requests
 fastapi
 fastapi-utils
