@@ -4,7 +4,7 @@
 import re
 import os
 from datetime import datetime
-from typing import List, Dict
+from typing import List, Dict, Union
 
 from src.app import app, scraper
 
@@ -23,7 +23,7 @@ async def get_api_past(date: str) -> dict:
     return {"status": data and 200 or 404, "data": data, "date": date}
 
 @app.get("/api/dates")
-async def get_dates() -> Dict[str, int | List[str]]:
+async def get_dates() -> Dict[str, Union[int, List[str]]]:
     return {
         "status": 200,
         "data": sorted(

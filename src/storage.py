@@ -5,9 +5,9 @@ import os
 import time
 import json
 import gzip
-from typing import List
 from pathlib import Path
 from datetime import datetime
+from typing import List, Union
 
 from requests import get
 
@@ -74,7 +74,7 @@ class Scraper(object):
     def current_key(self) -> str:
         return datetime.utcnow().strftime("%m-%d-%y") + ".json"  # 0M-0D-0Y
 
-    def get_weather_for(self, date: str) -> List[dict] | None:
+    def get_weather_for(self, date: str) -> Union[List[dict], None]:
         fp = entries_location / (date + ".json.gz")
         cache_data = self.data_cache.get(date)
         if cache_data is not None:
