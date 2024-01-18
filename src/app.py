@@ -1,35 +1,25 @@
-# Copyright 2023 iiPython
+# Copyright (c) 2023-2024 iiPython
 
 # Modules
-import os
-import asyncio
-from jinja2 import FileSystemLoader
-from blacksheep import Application
-from blacksheep.server.templating import use_templates
+from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+from fastapi_utils.tasks import repeat_every
 
 from .storage import Scraper
 from .config import config, app_root
 
 # Initialization
-app = Application()
-app.serve_files(os.path.join(app_root, "src/static"), root_path = "static")
-render = use_templates(
-    app,
-    loader = FileSystemLoader(os.path.join(app_root, "src/templates"))
-)
+app = FastAPI()
+app.mount("/static", StaticFiles(directory = app_root / "src/static"), name = "static")
 
 # Handle periodic scraping
-scraper = Scraper()  # noqa
-async def scrape_task(app: Application) -> None:
-    interval = config.get("scrape_interval", 10) * 60
-    while True:
-        scraper.scrape_weather()
-        await asyncio.sleep(interval)
+scraper = Scraper()
+interval = config.get("scrape_interval", 10) * 60
 
-async def configure_scraper(app: Application) -> None:
-    asyncio.get_event_loop().create_task(scrape_task(app))
-
-app.on_start += configure_scraper
+@app.on_event("startup")
+@repeat_every(seconds = interval)
+def handle_weather_scrape() -> None:
+    scraper.scrape_weather()
 
 # Routes
 from .routes import (api, frontend)  # noqa

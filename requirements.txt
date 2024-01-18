@@ -1,5 +1,6 @@
 toml; python_version < "3.11"
-jinja2
 uvicorn
+natsort
 requests
-blacksheep
+fastapi
+fastapi-utils

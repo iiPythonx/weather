@@ -1,4 +1,4 @@
-# Copyright 2023 iiPython
+# Copyright (c) 2023-2024 iiPython
 
 # Modules
 import os
@@ -81,7 +81,26 @@ class Scraper(object):
             return cache_data
 
         elif not fp.is_file():
-            return None
+
+            # Check if theres an active .json file
+            fp_json = entries_location / (date + ".json")
+            if fp_json.is_file():
+                with fp_json.open("rb") as fh:
+                    json_string = fh.read()
+                    json_data = json.loads(json_string)
+
+                if fp_json.name != self.current_key():
+                    self.data_cache[date] = json_data
+                    with fp.open("wb") as fh:
+                        fh.write(gzip.compress(json_string))
+
+                    os.remove(fp_json)
+                    print(f"[-] File '{fp_json.name}' was not previously closed. File has been fixed.")
+                    return self.data_cache[date]
+
+                return json_data
+
+            return None  # Otherwise this date doesn't exist
 
         with open(fp, "rb") as fh:
             data = json.loads(gzip.decompress(fh.read()).decode())

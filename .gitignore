@@ -1,6 +1,6 @@
 # Python stuff
 __pycache__/
-venv/
+.venv/
 
 # Hide config
 config.toml
